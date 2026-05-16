@@ -20,3 +20,24 @@ jobs:
       - name: Run a hello script
         run: |
           python app.py
+
+
+
+
+  docker-build-and-push:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.dockerhub_username }}
+          password: ${{ secrets.dockerhub_secret }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: dockerhub_username/hello-world-python:latest
